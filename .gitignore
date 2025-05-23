@@ -1,0 +1,17 @@
+bin/
+obj/
+*.user
+*.suo
+*.vs/
+*.ncrunch*
+*.resharper
+*.ReSharper.*
+*.DotSettings.user
+.vscode/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+*.db
+*.sqlite

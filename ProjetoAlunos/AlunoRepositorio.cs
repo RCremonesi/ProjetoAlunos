@@ -6,7 +6,7 @@ namespace ProjetoAlunos
 {
     public class AlunoRepositorio
     {
-        private string connectionString = @"Data Source=C:\Users\RICARDO\alunos.db;Version=3;";
+        private string connectionString = @"Data Source=alunos.db;Version=3;";
 
         public bool RAExiste(string ra)
         {

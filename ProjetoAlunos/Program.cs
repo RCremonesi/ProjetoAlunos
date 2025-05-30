@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SQLite;
 using ProjetoAlunos;
 
 namespace ProjetoAlunos
@@ -61,8 +60,18 @@ namespace ProjetoAlunos
             Console.Write("RA: ");
             string ra = Console.ReadLine();
 
+          
+            if (repositorio.RAExiste(ra))
+            {
+                Console.WriteLine("ERRO: RA já cadastrado! Não é possível inserir.");
+                return; 
+            }
+
             Console.Write("Nome: ");
             string nome = Console.ReadLine();
+
+            Console.Write("Endereço: ");
+            string endereco = Console.ReadLine();
 
             Console.Write("Idade: ");
             int idade = int.Parse(Console.ReadLine());
@@ -70,7 +79,7 @@ namespace ProjetoAlunos
             Console.Write("Curso: ");
             string curso = Console.ReadLine();
 
-            Aluno aluno = new Aluno { Ra = ra, Nome = nome, Idade = idade, Curso = curso };
+            Aluno aluno = new Aluno { Ra = ra, Nome = nome, Endereco = endereco, Idade = idade, Curso = curso };
 
             repositorio.Inserir(aluno);
 
@@ -91,7 +100,12 @@ namespace ProjetoAlunos
             {
                 foreach (var aluno in alunos)
                 {
-                    Console.WriteLine($"RA: {aluno.Ra}, Nome: {aluno.Nome}, Idade: {aluno.Idade}, Curso: {aluno.Curso}");
+                    Console.WriteLine($"RA: {aluno.Ra}");
+                    Console.WriteLine($"Nome: {aluno.Nome}");
+                    Console.WriteLine($"Endereço: {aluno.Endereco}");
+                    Console.WriteLine($"Idade: {aluno.Idade}");
+                    Console.WriteLine($"Curso: {aluno.Curso}");
+                    Console.WriteLine(new string('-', 30));
                 }
             }
         }
@@ -106,13 +120,16 @@ namespace ProjetoAlunos
             Console.Write("Novo nome: ");
             string nome = Console.ReadLine();
 
+            Console.Write("Novo endereço: ");
+            string endereco = Console.ReadLine();
+
             Console.Write("Nova idade: ");
             int idade = int.Parse(Console.ReadLine());
 
             Console.Write("Novo curso: ");
             string curso = Console.ReadLine();
 
-            Aluno aluno = new Aluno { Ra = ra, Nome = nome, Idade = idade, Curso = curso };
+            Aluno aluno = new Aluno { Ra = ra, Nome = nome, Endereco = endereco, Idade = idade, Curso = curso };
 
             repositorio.AtualizarAluno(aluno);
 
@@ -126,9 +143,12 @@ namespace ProjetoAlunos
             Console.Write("RA do aluno a excluir: ");
             string ra = Console.ReadLine();
 
-            repositorio.ExcluirAluno(ra);
+            bool excluido = repositorio.ExcluirAluno(ra);
 
-            Console.WriteLine("Aluno excluído com sucesso!");
+            if (excluido)
+                Console.WriteLine("Aluno excluído com sucesso!");
+            else
+                Console.WriteLine("RA não encontrado. Nenhum aluno foi excluído.");
         }
     }
 }

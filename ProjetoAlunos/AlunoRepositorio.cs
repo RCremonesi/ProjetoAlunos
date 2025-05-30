@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SQLite;
 
 namespace ProjetoAlunos
@@ -11,12 +8,28 @@ namespace ProjetoAlunos
     {
         private string connectionString = @"Data Source=C:\Users\RICARDO\alunos.db;Version=3;";
 
+        public bool RAExiste(string ra)
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                string sql = "SELECT COUNT(1) FROM alunos WHERE RA = @RA";
+                using (var cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.Parameters.AddWithValue("@RA", ra);
+                    long count = (long)cmd.ExecuteScalar();
+                    return count > 0;
+                }
+            }
+        }
+
+
         public void Inserir(Aluno aluno)
         {
             using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
-                string sql = "INSERT INTO Aluno (RA, Nome, Endereco, Curso, Idade) VALUES (@RA, @Nome, @Endereco, @Curso, @Idade)";
+                string sql = "INSERT INTO alunos (RA, Nome, Endereco, Curso, Idade) VALUES (@RA, @Nome, @Endereco, @Curso, @Idade)";
                 using (var cmd = new SQLiteCommand(sql, connection))
                 {
                     cmd.Parameters.AddWithValue("@RA", aluno.Ra);
@@ -29,17 +42,35 @@ namespace ProjetoAlunos
             }
         }
 
-        public void ExcluirAluno(string ra)
+        public bool ExcluirAluno(string ra)
         {
             using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
-                string sql = "DELETE FROM Aluno WHERE RA = @RA";
+
+                
+                string verificaSql = "SELECT COUNT(*) FROM alunos WHERE RA = @RA";
+                using (var verificaCmd = new SQLiteCommand(verificaSql, connection))
+                {
+                    verificaCmd.Parameters.AddWithValue("@RA", ra);
+                    long count = (long)verificaCmd.ExecuteScalar();
+
+                    if (count == 0)
+                    {
+                        
+                        return false;
+                    }
+                }
+
+                
+                string sql = "DELETE FROM alunos WHERE RA = @RA";
                 using (var cmd = new SQLiteCommand(sql, connection))
                 {
                     cmd.Parameters.AddWithValue("@RA", ra);
                     cmd.ExecuteNonQuery();
                 }
+
+                return true;
             }
         }
 
@@ -48,7 +79,7 @@ namespace ProjetoAlunos
             using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
-                string sql = @"UPDATE Aluno SET 
+                string sql = @"UPDATE alunos SET 
                                Nome = @Nome,
                                Endereco = @Endereco,
                                Idade = @Idade,
@@ -74,7 +105,7 @@ namespace ProjetoAlunos
             using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
-                string sql = "SELECT RA, Nome, Endereco, Idade, Curso FROM Aluno";
+                string sql = "SELECT RA, Nome, Endereco, Idade, Curso FROM alunos";
 
                 using (var cmd = new SQLiteCommand(sql, connection))
                 {
